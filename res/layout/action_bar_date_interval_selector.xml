@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="horizontal" android:layout_width="match_parent"
+	android:layout_height="match_parent">
+    <TextView android:text="@string/date_from" android:id="@+id/textView1" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+    <Button android:text="Button" android:id="@+id/dateFrom" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+    <Button android:text="Button" android:id="@+id/timeFrom" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+    <TextView android:text="@string/date_to" android:id="@+id/textView2" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+    <Button android:text="Button" android:id="@+id/dateTo" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+    <Button android:text="Button" android:id="@+id/timeTo" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+</LinearLayout>
