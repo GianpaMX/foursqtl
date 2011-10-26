@@ -5,6 +5,8 @@ import com.github.juansimp.MyDateTime;
 import com.github.juansimp.MyDateTimeUpdatable;
 import com.github.juansimp.MyTimePicker;
 
+import fi.foyt.foursquare.api.FoursquareApi;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
@@ -18,6 +20,8 @@ public class FourSqTLActivity extends Activity {
 	private MyDatePicker dateFromPicker, dateToPicker;
 	private MyTimePicker timeFromPicker, timeToPicker;
 	
+	private FoursquareApi foursquareApi;
+	
 	private Button dateFromButton, timeFromButton, dateToButton, timeToButton;
 	
 	/** Called when the activity is first created. */
@@ -26,7 +30,12 @@ public class FourSqTLActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		
+		setupFoursqureApi();
 		setupActionBar();
+	}
+
+	private void setupFoursqureApi() {
+		foursquareApi = new FoursquareApi(getString(R.string.client_id), getString(R.string.client_secret), getString(R.string.callback_url));
 	}
 
 	@Override

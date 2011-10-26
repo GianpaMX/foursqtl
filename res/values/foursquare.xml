@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="client_id">Client ID</string>
+    <string name="client_secret">Client Secret</string>
+    <string name="callback_url">Callback URL</string>
+</resources>

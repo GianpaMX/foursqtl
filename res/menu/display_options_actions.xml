@@ -14,6 +14,6 @@
      limitations under the License.
 -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/simple_item"
-          android:title="Simple item" />
+    <item android:id="@+id/refresh"
+          android:title="@string/refresh" />
 </menu>

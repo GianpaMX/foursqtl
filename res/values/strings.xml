@@ -3,4 +3,5 @@
     <string name="app_name">FourSqTL</string>
     <string name="date_from">From:</string>
     <string name="date_to">To:</string>
+    <string name="refresh">Refresh</string>
 </resources>
