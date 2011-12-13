@@ -1,27 +1,30 @@
 package com.github.juansimp.foursqtl;
 
-import com.github.juansimp.MyDatePicker;
-import com.github.juansimp.MyDateTime;
-import com.github.juansimp.MyDateTimeUpdatable;
-import com.github.juansimp.MyTimePicker;
-
-import fi.foyt.foursquare.api.FoursquareApi;
-
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 
+import com.github.juansimp.MyDatePicker;
+import com.github.juansimp.MyDateTime;
+import com.github.juansimp.MyDateTimeUpdatable;
+import com.github.juansimp.MyFoursquare;
+import com.github.juansimp.MyTimePicker;
+import com.github.juansimp.foursqtl.model.Database;
+import com.github.juansimp.foursqtl.model.catalog.AuthenticationCatalog;
+import com.github.juansimp.foursqtl.model.collection.AuthenticationCollection;
+import com.github.juansimp.foursqtl.model.exception.UninitializedDatabaseException;
+
 public class FourSqTLActivity extends Activity {
 	private MyDateTime dateFrom, dateTo;
 	private MyDatePicker dateFromPicker, dateToPicker;
 	private MyTimePicker timeFromPicker, timeToPicker;
-	
-	private FoursquareApi foursquareApi;
-	
+		
 	private Button dateFromButton, timeFromButton, dateToButton, timeToButton;
 	
 	/** Called when the activity is first created. */
@@ -30,12 +33,34 @@ public class FourSqTLActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		
+		setupDatabase();
 		setupFoursqureApi();
 		setupActionBar();
+		
+		try {
+			login();
+		} catch (UninitializedDatabaseException e) {
+			Log.e("F", e.getMessage());
+		}
+	}
+	
+	private void login() throws UninitializedDatabaseException {
+		AuthenticationCatalog authenticationCatalog = AuthenticationCatalog.getInstance();
+		AuthenticationCollection auths = authenticationCatalog.fetchAll();
+		
+		if(auths.size() == 0) {
+            Intent intent = new Intent(this, ActivityWebView.class);
+            startActivity(intent);
+		}
+		Log.d("F", "size = " + auths.size());
+	}
+
+	private void setupDatabase() {
+		Database.init(getApplicationContext());
 	}
 
 	private void setupFoursqureApi() {
-		foursquareApi = new FoursquareApi(getString(R.string.client_id), getString(R.string.client_secret), getString(R.string.callback_url));
+		MyFoursquare.init(getString(R.string.foursquare_client_id), getString(R.string.foursquare_client_secret), getString(R.string.foursquare_callback_url));
 	}
 
 	@Override
