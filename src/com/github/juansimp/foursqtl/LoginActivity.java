@@ -17,6 +17,7 @@ import fi.foyt.foursquare.api.entities.CompleteUser;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -87,10 +88,16 @@ public class LoginActivity extends Activity {
     
 	private class SetAuthenticateCode extends AsyncTask<Void, Void, Boolean> {
 		private String code;
+		ProgressDialog dialog;
 		
 		public SetAuthenticateCode(String code) {
 			super();
 			this.code = code;
+		}
+		
+		@Override
+		protected void onPreExecute() {
+			dialog = ProgressDialog.show(LoginActivity.this, "", "Authenticating. Please wait...", true);
 		}
 
 		@Override
@@ -106,6 +113,7 @@ public class LoginActivity extends Activity {
 		
 		@Override
 		protected void onPostExecute (Boolean result) {
+			dialog.dismiss();
 			if(result) {
 				LoginActivity.this.startApp();
 			} else {
@@ -134,11 +142,17 @@ public class LoginActivity extends Activity {
     	private String idUser;
     	private Authentication auth;
     	private int dialogId;
+    	ProgressDialog dialog;
     	
     	public GetUserTask(String accessToken) {
     		super();
     		this.code = accessToken;
     	}
+
+		@Override
+		protected void onPreExecute() {
+			dialog = ProgressDialog.show(LoginActivity.this, "", "Getting user info. Please wait...", true);
+		}
     	
 		@Override
 		protected Boolean doInBackground(Void... params) {
@@ -171,6 +185,7 @@ public class LoginActivity extends Activity {
 		}
 		@Override
 		protected void onPostExecute (Boolean result) {
+			dialog.dismiss();
 			if(result) {
 				LoginActivity.this.startApp();
 			} else {
