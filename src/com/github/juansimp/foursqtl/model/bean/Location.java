@@ -1,8 +1,20 @@
 package com.github.juansimp.foursqtl.model.bean;
 
+import android.content.Intent;
+
 import com.github.juansimp.foursqtl.model.Bean;
 
 public class Location implements Bean {
+    final public static String FOURSQTL_LOCATION_ID_LOCATION = "com.github.juansimp.foursqtl.model.bean.location.ID_LOCATION";
+    final public static String FOURSQTL_LOCATION_ADDRESS = "com.github.juansimp.foursqtl.model.bean.location.ADDRESS";
+    final public static String FOURSQTL_LOCATION_CROSS_STREET = "com.github.juansimp.foursqtl.model.bean.location.CROSS_STREET";
+    final public static String FOURSQTL_LOCATION_LAT = "com.github.juansimp.foursqtl.model.bean.location.LAT";
+    final public static String FOURSQTL_LOCATION_LNG = "com.github.juansimp.foursqtl.model.bean.location.LNG";
+    final public static String FOURSQTL_LOCATION_POSTAL_CODE = "com.github.juansimp.foursqtl.model.bean.location.POSTAL_CODE";
+    final public static String FOURSQTL_LOCATION_CITY = "com.github.juansimp.foursqtl.model.bean.location.CITY";
+    final public static String FOURSQTL_LOCATION_STATE = "com.github.juansimp.foursqtl.model.bean.location.STATE";
+    final public static String FOURSQTL_LOCATION_COUNTRY = "com.github.juansimp.foursqtl.model.bean.location.COUNTRY";
+
     private int idLocation;
     private String address;
     private String crossStreet;
@@ -34,7 +46,8 @@ public class Location implements Bean {
 		this.idLocation = idLocation;
 	}
 	
-        public long getId() {
+        @Override
+    public long getId() {
         return getIdLocation();
     }
     	public String getAddress(){
@@ -101,7 +114,9 @@ public class Location implements Bean {
 		this.country = country;
 	}
 	
-        public void setData(Object[] data) {
+        
+    @Override
+    public void setData(Object[] data) {
                 setIdLocation((Integer) data[0]);
                 setAddress((String) data[1]);
                 setCrossStreet((String) data[2]);
@@ -112,4 +127,20 @@ public class Location implements Bean {
                 setState((String) data[7]);
                 setCountry((String) data[8]);
             }
+    
+    @Override
+    public Intent toIntent() {
+        Intent intent = new Intent();
+                intent.putExtra(Location.FOURSQTL_LOCATION_ID_LOCATION, String.valueOf(getIdLocation()));
+                intent.putExtra(Location.FOURSQTL_LOCATION_ADDRESS, String.valueOf(getAddress()));
+                intent.putExtra(Location.FOURSQTL_LOCATION_CROSS_STREET, String.valueOf(getCrossStreet()));
+                intent.putExtra(Location.FOURSQTL_LOCATION_LAT, String.valueOf(getLat()));
+                intent.putExtra(Location.FOURSQTL_LOCATION_LNG, String.valueOf(getLng()));
+                intent.putExtra(Location.FOURSQTL_LOCATION_POSTAL_CODE, String.valueOf(getPostalCode()));
+                intent.putExtra(Location.FOURSQTL_LOCATION_CITY, String.valueOf(getCity()));
+                intent.putExtra(Location.FOURSQTL_LOCATION_STATE, String.valueOf(getState()));
+                intent.putExtra(Location.FOURSQTL_LOCATION_COUNTRY, String.valueOf(getCountry()));
+                return intent;
+    }
+    
 }

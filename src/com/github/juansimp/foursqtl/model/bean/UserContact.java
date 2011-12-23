@@ -1,8 +1,16 @@
 package com.github.juansimp.foursqtl.model.bean;
 
+import android.content.Intent;
+
 import com.github.juansimp.foursqtl.model.Bean;
 
 public class UserContact implements Bean {
+    final public static String FOURSQTL_USERCONTACT_ID_USER = "com.github.juansimp.foursqtl.model.bean.userContact.ID_USER";
+    final public static String FOURSQTL_USERCONTACT_PHONE = "com.github.juansimp.foursqtl.model.bean.userContact.PHONE";
+    final public static String FOURSQTL_USERCONTACT_EMAIL = "com.github.juansimp.foursqtl.model.bean.userContact.EMAIL";
+    final public static String FOURSQTL_USERCONTACT_TWITTER = "com.github.juansimp.foursqtl.model.bean.userContact.TWITTER";
+    final public static String FOURSQTL_USERCONTACT_FACEBOOK = "com.github.juansimp.foursqtl.model.bean.userContact.FACEBOOK";
+
     private int idUser;
     private String phone;
     private String email;
@@ -26,7 +34,8 @@ public class UserContact implements Bean {
 		this.idUser = idUser;
 	}
 	
-        public long getId() {
+        @Override
+    public long getId() {
         return getIdUser();
     }
     	public String getPhone(){
@@ -61,11 +70,25 @@ public class UserContact implements Bean {
 		this.facebook = facebook;
 	}
 	
-        public void setData(Object[] data) {
+        
+    @Override
+    public void setData(Object[] data) {
                 setIdUser((Integer) data[0]);
                 setPhone((String) data[1]);
                 setEmail((String) data[2]);
                 setTwitter((String) data[3]);
                 setFacebook((String) data[4]);
             }
+    
+    @Override
+    public Intent toIntent() {
+        Intent intent = new Intent();
+                intent.putExtra(UserContact.FOURSQTL_USERCONTACT_ID_USER, String.valueOf(getIdUser()));
+                intent.putExtra(UserContact.FOURSQTL_USERCONTACT_PHONE, String.valueOf(getPhone()));
+                intent.putExtra(UserContact.FOURSQTL_USERCONTACT_EMAIL, String.valueOf(getEmail()));
+                intent.putExtra(UserContact.FOURSQTL_USERCONTACT_TWITTER, String.valueOf(getTwitter()));
+                intent.putExtra(UserContact.FOURSQTL_USERCONTACT_FACEBOOK, String.valueOf(getFacebook()));
+                return intent;
+    }
+    
 }

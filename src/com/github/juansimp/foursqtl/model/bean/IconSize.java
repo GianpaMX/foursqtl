@@ -1,8 +1,14 @@
 package com.github.juansimp.foursqtl.model.bean;
 
+import android.content.Intent;
+
 import com.github.juansimp.foursqtl.model.Bean;
 
 public class IconSize implements Bean {
+    final public static String FOURSQTL_ICONSIZE_ID_ICON_SIZE = "com.github.juansimp.foursqtl.model.bean.iconSize.ID_ICON_SIZE";
+    final public static String FOURSQTL_ICONSIZE_ID_ICON = "com.github.juansimp.foursqtl.model.bean.iconSize.ID_ICON";
+    final public static String FOURSQTL_ICONSIZE_SIZE = "com.github.juansimp.foursqtl.model.bean.iconSize.SIZE";
+
     private int idIconSize;
     private int idIcon;
     private String size;
@@ -22,7 +28,8 @@ public class IconSize implements Bean {
 		this.idIconSize = idIconSize;
 	}
 	
-        public long getId() {
+        @Override
+    public long getId() {
         return getIdIconSize();
     }
     	public int getIdIcon(){
@@ -41,9 +48,21 @@ public class IconSize implements Bean {
 		this.size = size;
 	}
 	
-        public void setData(Object[] data) {
+        
+    @Override
+    public void setData(Object[] data) {
                 setIdIconSize((Integer) data[0]);
                 setIdIcon((Integer) data[1]);
                 setSize((String) data[2]);
             }
+    
+    @Override
+    public Intent toIntent() {
+        Intent intent = new Intent();
+                intent.putExtra(IconSize.FOURSQTL_ICONSIZE_ID_ICON_SIZE, String.valueOf(getIdIconSize()));
+                intent.putExtra(IconSize.FOURSQTL_ICONSIZE_ID_ICON, String.valueOf(getIdIcon()));
+                intent.putExtra(IconSize.FOURSQTL_ICONSIZE_SIZE, String.valueOf(getSize()));
+                return intent;
+    }
+    
 }

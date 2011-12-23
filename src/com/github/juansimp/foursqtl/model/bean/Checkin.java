@@ -1,8 +1,18 @@
 package com.github.juansimp.foursqtl.model.bean;
 
+import android.content.Intent;
+
 import com.github.juansimp.foursqtl.model.Bean;
 
 public class Checkin implements Bean {
+    final public static String FOURSQTL_CHECKIN_ID_CHECKIN = "com.github.juansimp.foursqtl.model.bean.checkin.ID_CHECKIN";
+    final public static String FOURSQTL_CHECKIN_ID_USER = "com.github.juansimp.foursqtl.model.bean.checkin.ID_USER";
+    final public static String FOURSQTL_CHECKIN_ID_VENUE = "com.github.juansimp.foursqtl.model.bean.checkin.ID_VENUE";
+    final public static String FOURSQTL_CHECKIN_CREATED_AT = "com.github.juansimp.foursqtl.model.bean.checkin.CREATED_AT";
+    final public static String FOURSQTL_CHECKIN_SHOUT = "com.github.juansimp.foursqtl.model.bean.checkin.SHOUT";
+    final public static String FOURSQTL_CHECKIN_IS_MAYOR = "com.github.juansimp.foursqtl.model.bean.checkin.IS_MAYOR";
+    final public static String FOURSQTL_CHECKIN_TIME_ZONE = "com.github.juansimp.foursqtl.model.bean.checkin.TIME_ZONE";
+
     private int idCheckin;
     private int idUser;
     private int idVenue;
@@ -30,7 +40,8 @@ public class Checkin implements Bean {
 		this.idCheckin = idCheckin;
 	}
 	
-        public long getId() {
+        @Override
+    public long getId() {
         return getIdCheckin();
     }
     	public int getIdUser(){
@@ -81,7 +92,9 @@ public class Checkin implements Bean {
 		this.timeZone = timeZone;
 	}
 	
-        public void setData(Object[] data) {
+        
+    @Override
+    public void setData(Object[] data) {
                 setIdCheckin((Integer) data[0]);
                 setIdUser((Integer) data[1]);
                 setIdVenue((Integer) data[2]);
@@ -90,4 +103,18 @@ public class Checkin implements Bean {
                 setIsMayor((Integer) data[5]);
                 setTimeZone((String) data[6]);
             }
+    
+    @Override
+    public Intent toIntent() {
+        Intent intent = new Intent();
+                intent.putExtra(Checkin.FOURSQTL_CHECKIN_ID_CHECKIN, String.valueOf(getIdCheckin()));
+                intent.putExtra(Checkin.FOURSQTL_CHECKIN_ID_USER, String.valueOf(getIdUser()));
+                intent.putExtra(Checkin.FOURSQTL_CHECKIN_ID_VENUE, String.valueOf(getIdVenue()));
+                intent.putExtra(Checkin.FOURSQTL_CHECKIN_CREATED_AT, String.valueOf(getCreatedAt()));
+                intent.putExtra(Checkin.FOURSQTL_CHECKIN_SHOUT, String.valueOf(getShout()));
+                intent.putExtra(Checkin.FOURSQTL_CHECKIN_IS_MAYOR, String.valueOf(getIsMayor()));
+                intent.putExtra(Checkin.FOURSQTL_CHECKIN_TIME_ZONE, String.valueOf(getTimeZone()));
+                return intent;
+    }
+    
 }

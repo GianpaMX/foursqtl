@@ -1,8 +1,18 @@
 package com.github.juansimp.foursqtl.model.bean;
 
+import android.content.Intent;
+
 import com.github.juansimp.foursqtl.model.Bean;
 
 public class User implements Bean {
+    final public static String FOURSQTL_USER_ID_USER = "com.github.juansimp.foursqtl.model.bean.user.ID_USER";
+    final public static String FOURSQTL_USER_FIRST_NAME = "com.github.juansimp.foursqtl.model.bean.user.FIRST_NAME";
+    final public static String FOURSQTL_USER_LAST_NAME = "com.github.juansimp.foursqtl.model.bean.user.LAST_NAME";
+    final public static String FOURSQTL_USER_PHOTO = "com.github.juansimp.foursqtl.model.bean.user.PHOTO";
+    final public static String FOURSQTL_USER_GENDER = "com.github.juansimp.foursqtl.model.bean.user.GENDER";
+    final public static String FOURSQTL_USER_HOME_CITY = "com.github.juansimp.foursqtl.model.bean.user.HOME_CITY";
+    final public static String FOURSQTL_USER_RELATIONSHIP = "com.github.juansimp.foursqtl.model.bean.user.RELATIONSHIP";
+
     private int idUser;
     private String firstName;
     private String lastName;
@@ -30,7 +40,8 @@ public class User implements Bean {
 		this.idUser = idUser;
 	}
 	
-        public long getId() {
+        @Override
+    public long getId() {
         return getIdUser();
     }
     	public String getFirstName(){
@@ -81,7 +92,9 @@ public class User implements Bean {
 		this.relationship = relationship;
 	}
 	
-        public void setData(Object[] data) {
+        
+    @Override
+    public void setData(Object[] data) {
                 setIdUser((Integer) data[0]);
                 setFirstName((String) data[1]);
                 setLastName((String) data[2]);
@@ -90,4 +103,18 @@ public class User implements Bean {
                 setHomeCity((String) data[5]);
                 setRelationship((String) data[6]);
             }
+    
+    @Override
+    public Intent toIntent() {
+        Intent intent = new Intent();
+                intent.putExtra(User.FOURSQTL_USER_ID_USER, String.valueOf(getIdUser()));
+                intent.putExtra(User.FOURSQTL_USER_FIRST_NAME, String.valueOf(getFirstName()));
+                intent.putExtra(User.FOURSQTL_USER_LAST_NAME, String.valueOf(getLastName()));
+                intent.putExtra(User.FOURSQTL_USER_PHOTO, String.valueOf(getPhoto()));
+                intent.putExtra(User.FOURSQTL_USER_GENDER, String.valueOf(getGender()));
+                intent.putExtra(User.FOURSQTL_USER_HOME_CITY, String.valueOf(getHomeCity()));
+                intent.putExtra(User.FOURSQTL_USER_RELATIONSHIP, String.valueOf(getRelationship()));
+                return intent;
+    }
+    
 }

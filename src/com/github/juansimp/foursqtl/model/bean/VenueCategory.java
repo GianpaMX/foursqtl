@@ -1,8 +1,14 @@
 package com.github.juansimp.foursqtl.model.bean;
 
+import android.content.Intent;
+
 import com.github.juansimp.foursqtl.model.Bean;
 
 public class VenueCategory implements Bean {
+    final public static String FOURSQTL_VENUECATEGORY_ID_VENUE = "com.github.juansimp.foursqtl.model.bean.venueCategory.ID_VENUE";
+    final public static String FOURSQTL_VENUECATEGORY_ID_CATEGORY = "com.github.juansimp.foursqtl.model.bean.venueCategory.ID_CATEGORY";
+    final public static String FOURSQTL_VENUECATEGORY_PRIMARY = "com.github.juansimp.foursqtl.model.bean.venueCategory.PRIMARY";
+
     private int idVenue;
     private int idCategory;
     private int primary;
@@ -22,7 +28,8 @@ public class VenueCategory implements Bean {
 		this.idVenue = idVenue;
 	}
 	
-        public long getId() {
+        @Override
+    public long getId() {
         return getIdVenue();
     }
     	public int getIdCategory(){
@@ -41,9 +48,21 @@ public class VenueCategory implements Bean {
 		this.primary = primary;
 	}
 	
-        public void setData(Object[] data) {
+        
+    @Override
+    public void setData(Object[] data) {
                 setIdVenue((Integer) data[0]);
                 setIdCategory((Integer) data[1]);
                 setPrimary((Integer) data[2]);
             }
+    
+    @Override
+    public Intent toIntent() {
+        Intent intent = new Intent();
+                intent.putExtra(VenueCategory.FOURSQTL_VENUECATEGORY_ID_VENUE, String.valueOf(getIdVenue()));
+                intent.putExtra(VenueCategory.FOURSQTL_VENUECATEGORY_ID_CATEGORY, String.valueOf(getIdCategory()));
+                intent.putExtra(VenueCategory.FOURSQTL_VENUECATEGORY_PRIMARY, String.valueOf(getPrimary()));
+                return intent;
+    }
+    
 }

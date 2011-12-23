@@ -1,8 +1,16 @@
 package com.github.juansimp.foursqtl.model.bean;
 
+import android.content.Intent;
+
 import com.github.juansimp.foursqtl.model.Bean;
 
 public class Category implements Bean {
+    final public static String FOURSQTL_CATEGORY_ID_CATEGORY = "com.github.juansimp.foursqtl.model.bean.category.ID_CATEGORY";
+    final public static String FOURSQTL_CATEGORY_ID_ICON = "com.github.juansimp.foursqtl.model.bean.category.ID_ICON";
+    final public static String FOURSQTL_CATEGORY_NAME = "com.github.juansimp.foursqtl.model.bean.category.NAME";
+    final public static String FOURSQTL_CATEGORY_PLURAL_NAME = "com.github.juansimp.foursqtl.model.bean.category.PLURAL_NAME";
+    final public static String FOURSQTL_CATEGORY_SHORT_NAME = "com.github.juansimp.foursqtl.model.bean.category.SHORT_NAME";
+
     private int idCategory;
     private int idIcon;
     private String name;
@@ -26,7 +34,8 @@ public class Category implements Bean {
 		this.idCategory = idCategory;
 	}
 	
-        public long getId() {
+        @Override
+    public long getId() {
         return getIdCategory();
     }
     	public int getIdIcon(){
@@ -61,11 +70,25 @@ public class Category implements Bean {
 		this.shortName = shortName;
 	}
 	
-        public void setData(Object[] data) {
+        
+    @Override
+    public void setData(Object[] data) {
                 setIdCategory((Integer) data[0]);
                 setIdIcon((Integer) data[1]);
                 setName((String) data[2]);
                 setPluralName((String) data[3]);
                 setShortName((String) data[4]);
             }
+    
+    @Override
+    public Intent toIntent() {
+        Intent intent = new Intent();
+                intent.putExtra(Category.FOURSQTL_CATEGORY_ID_CATEGORY, String.valueOf(getIdCategory()));
+                intent.putExtra(Category.FOURSQTL_CATEGORY_ID_ICON, String.valueOf(getIdIcon()));
+                intent.putExtra(Category.FOURSQTL_CATEGORY_NAME, String.valueOf(getName()));
+                intent.putExtra(Category.FOURSQTL_CATEGORY_PLURAL_NAME, String.valueOf(getPluralName()));
+                intent.putExtra(Category.FOURSQTL_CATEGORY_SHORT_NAME, String.valueOf(getShortName()));
+                return intent;
+    }
+    
 }

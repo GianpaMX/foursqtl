@@ -17,6 +17,9 @@ public abstract class AbstractCatalog<T extends Bean> {
     
     public long insert(T bean) {
         ContentValues values = getContentValues(bean);
+        if(values.containsKey(getPrimaryKey())) {
+            values.remove(getPrimaryKey());
+        }
         return database.insert(getTableName(), null, values);
     }
     
@@ -31,6 +34,14 @@ public abstract class AbstractCatalog<T extends Bean> {
         } else {
             return update(bean);
         }
+    }
+    
+    public boolean delete(T bean) {
+        return database.delete(getTableName(), getPrimaryKey() + " = " + bean.getId(), null) > 0;
+    }
+
+    public boolean deleteAll() {
+        return database.delete(getTableName(), null, null) > 0;
     }
     
     protected Cursor query(String selection) throws SQLException {
