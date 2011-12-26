@@ -3,6 +3,7 @@ package com.github.juansimp.foursqtl;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.github.juansimp.MyDatePicker;
 import com.github.juansimp.MyDateTime;
@@ -39,8 +41,26 @@ public class FourSqTLActivity extends Activity {
 		setContentView(R.layout.main);
 		
 		setupActionBar();
+		
+		new UserBarSetupTask().execute();
 	}
 	
+	private class UserBarSetupTask extends AsyncTask<Void, Void, Boolean> {
+		Bitmap userPhoto;
+		
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			String url = MyFoursquare.self.getPhoto();
+			userPhoto = MyFoursquare.Photo.loadPhotoBitmap(url);
+			return true;
+		}
+		@Override
+		protected void onPostExecute (Boolean result) {
+			ImageButton userImageButton = (ImageButton) findViewById(R.id.userImageButton);
+			userImageButton.setImageBitmap(userPhoto);
+		}
+	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.display_options_actions, menu);
@@ -82,7 +102,7 @@ public class FourSqTLActivity extends Activity {
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
 		int flags = 0;
-		flags = ActionBar.DISPLAY_HOME_AS_UP ^ ActionBar.DISPLAY_SHOW_CUSTOM;
+		flags = ActionBar.DISPLAY_SHOW_CUSTOM;
 
 		int change = bar.getDisplayOptions() ^ flags;
 		bar.setDisplayOptions(change, flags);

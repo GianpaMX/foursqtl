@@ -158,8 +158,15 @@ public class LoginActivity extends Activity {
 		protected Boolean doInBackground(Void... params) {
             try {
             	MyFoursquare.api.authenticateCode(code);
-            	idUser = MyFoursquare.api.user("self").getResult().getId();
-			} catch (FoursquareApiException e) {
+            	
+            	Result<CompleteUser> result = MyFoursquare.api.user("self");
+            	if (result.getMeta().getCode() == 200) {
+            		MyFoursquare.self = result.getResult();
+            		idUser = MyFoursquare.self.getId();
+            	} else {
+            		throw new Exception(result.getMeta().getErrorDetail());
+            	}
+			} catch (Exception e) {
 				Log.e("F", e.getMessage());
 				dialogId = LoginActivity.DIALOG_AUTH_ERROR_ID;
 				return false;
