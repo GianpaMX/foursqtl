@@ -40,8 +40,7 @@ public class Checkin implements Bean {
 		this.idCheckin = idCheckin;
 	}
 	
-        @Override
-    public long getId() {
+        public long getId() {
         return getIdCheckin();
     }
     	public int getIdUser(){
@@ -93,7 +92,6 @@ public class Checkin implements Bean {
 	}
 	
         
-    @Override
     public void setData(Object[] data) {
                 setIdCheckin((Integer) data[0]);
                 setIdUser((Integer) data[1]);
@@ -104,7 +102,6 @@ public class Checkin implements Bean {
                 setTimeZone((String) data[6]);
             }
     
-    @Override
     public Intent toIntent() {
         Intent intent = new Intent();
                 intent.putExtra(Checkin.FOURSQTL_CHECKIN_ID_CHECKIN, String.valueOf(getIdCheckin()));

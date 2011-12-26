@@ -34,8 +34,7 @@ public class UserContact implements Bean {
 		this.idUser = idUser;
 	}
 	
-        @Override
-    public long getId() {
+        public long getId() {
         return getIdUser();
     }
     	public String getPhone(){
@@ -71,7 +70,6 @@ public class UserContact implements Bean {
 	}
 	
         
-    @Override
     public void setData(Object[] data) {
                 setIdUser((Integer) data[0]);
                 setPhone((String) data[1]);
@@ -80,7 +78,6 @@ public class UserContact implements Bean {
                 setFacebook((String) data[4]);
             }
     
-    @Override
     public Intent toIntent() {
         Intent intent = new Intent();
                 intent.putExtra(UserContact.FOURSQTL_USERCONTACT_ID_USER, String.valueOf(getIdUser()));

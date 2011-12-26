@@ -28,8 +28,7 @@ public class IconSize implements Bean {
 		this.idIconSize = idIconSize;
 	}
 	
-        @Override
-    public long getId() {
+        public long getId() {
         return getIdIconSize();
     }
     	public int getIdIcon(){
@@ -49,14 +48,12 @@ public class IconSize implements Bean {
 	}
 	
         
-    @Override
     public void setData(Object[] data) {
                 setIdIconSize((Integer) data[0]);
                 setIdIcon((Integer) data[1]);
                 setSize((String) data[2]);
             }
     
-    @Override
     public Intent toIntent() {
         Intent intent = new Intent();
                 intent.putExtra(IconSize.FOURSQTL_ICONSIZE_ID_ICON_SIZE, String.valueOf(getIdIconSize()));

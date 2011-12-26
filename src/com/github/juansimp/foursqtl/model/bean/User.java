@@ -40,8 +40,7 @@ public class User implements Bean {
 		this.idUser = idUser;
 	}
 	
-        @Override
-    public long getId() {
+        public long getId() {
         return getIdUser();
     }
     	public String getFirstName(){
@@ -93,7 +92,6 @@ public class User implements Bean {
 	}
 	
         
-    @Override
     public void setData(Object[] data) {
                 setIdUser((Integer) data[0]);
                 setFirstName((String) data[1]);
@@ -104,7 +102,6 @@ public class User implements Bean {
                 setRelationship((String) data[6]);
             }
     
-    @Override
     public Intent toIntent() {
         Intent intent = new Intent();
                 intent.putExtra(User.FOURSQTL_USER_ID_USER, String.valueOf(getIdUser()));

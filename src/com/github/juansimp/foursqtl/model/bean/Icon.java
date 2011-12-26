@@ -28,8 +28,7 @@ public class Icon implements Bean {
 		this.idIcon = idIcon;
 	}
 	
-        @Override
-    public long getId() {
+        public long getId() {
         return getIdIcon();
     }
     	public String getPrefix(){
@@ -49,14 +48,12 @@ public class Icon implements Bean {
 	}
 	
         
-    @Override
     public void setData(Object[] data) {
                 setIdIcon((Integer) data[0]);
                 setPrefix((String) data[1]);
                 setName((String) data[2]);
             }
     
-    @Override
     public Intent toIntent() {
         Intent intent = new Intent();
                 intent.putExtra(Icon.FOURSQTL_ICON_ID_ICON, String.valueOf(getIdIcon()));

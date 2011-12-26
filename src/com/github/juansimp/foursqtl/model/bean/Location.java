@@ -46,8 +46,7 @@ public class Location implements Bean {
 		this.idLocation = idLocation;
 	}
 	
-        @Override
-    public long getId() {
+        public long getId() {
         return getIdLocation();
     }
     	public String getAddress(){
@@ -115,7 +114,6 @@ public class Location implements Bean {
 	}
 	
         
-    @Override
     public void setData(Object[] data) {
                 setIdLocation((Integer) data[0]);
                 setAddress((String) data[1]);
@@ -128,7 +126,6 @@ public class Location implements Bean {
                 setCountry((String) data[8]);
             }
     
-    @Override
     public Intent toIntent() {
         Intent intent = new Intent();
                 intent.putExtra(Location.FOURSQTL_LOCATION_ID_LOCATION, String.valueOf(getIdLocation()));

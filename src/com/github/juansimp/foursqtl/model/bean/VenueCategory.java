@@ -28,8 +28,7 @@ public class VenueCategory implements Bean {
 		this.idVenue = idVenue;
 	}
 	
-        @Override
-    public long getId() {
+        public long getId() {
         return getIdVenue();
     }
     	public int getIdCategory(){
@@ -49,14 +48,12 @@ public class VenueCategory implements Bean {
 	}
 	
         
-    @Override
     public void setData(Object[] data) {
                 setIdVenue((Integer) data[0]);
                 setIdCategory((Integer) data[1]);
                 setPrimary((Integer) data[2]);
             }
     
-    @Override
     public Intent toIntent() {
         Intent intent = new Intent();
                 intent.putExtra(VenueCategory.FOURSQTL_VENUECATEGORY_ID_VENUE, String.valueOf(getIdVenue()));

@@ -12,9 +12,7 @@ public class MyDatePicker extends MyPicker {
 		super(context, view, dateTime, dateTimeUpdatable);
 		
 		dialog = new DatePickerDialog(c, new DatePickerDialog.OnDateSetListener() {
-			@Override
-			public void onDateSet(DatePicker view, int year, int monthOfYear,
-					int dayOfMonth) {
+			public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 				dt.year = year;
 				dt.month = monthOfYear;
 				dt.day = dayOfMonth;
@@ -24,7 +22,6 @@ public class MyDatePicker extends MyPicker {
 		}, dt.year, dt.month, dt.day);
 
 		v.setOnClickListener(new OnClickListener() {
-			@Override
 			public void onClick(View v) {
 				((DatePickerDialog)dialog).updateDate(dt.year, dt.month, dt.day);
 				dialog.show();

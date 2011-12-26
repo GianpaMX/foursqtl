@@ -25,8 +25,7 @@ public class Authentication implements Bean {
 		this.idUser = idUser;
 	}
 	
-        @Override
-    public long getId() {
+        public long getId() {
         return getIdUser();
     }
     	public String getToken(){
@@ -38,13 +37,11 @@ public class Authentication implements Bean {
 	}
 	
         
-    @Override
     public void setData(Object[] data) {
                 setIdUser((Integer) data[0]);
                 setToken((String) data[1]);
             }
     
-    @Override
     public Intent toIntent() {
         Intent intent = new Intent();
                 intent.putExtra(Authentication.FOURSQTL_AUTHENTICATION_ID_USER, String.valueOf(getIdUser()));

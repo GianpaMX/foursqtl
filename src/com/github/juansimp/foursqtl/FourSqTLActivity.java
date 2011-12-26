@@ -75,7 +75,6 @@ public class FourSqTLActivity extends Activity {
 	}
 	
 	private MyDateTimeUpdatable myUpdateDisplay = new MyDateTimeUpdatable() {
-		@Override
 		public void dateTimeChanged(MyDateTime dateTime) {
 			updateDisplay();
 		} 

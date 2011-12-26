@@ -34,8 +34,7 @@ public class Category implements Bean {
 		this.idCategory = idCategory;
 	}
 	
-        @Override
-    public long getId() {
+        public long getId() {
         return getIdCategory();
     }
     	public int getIdIcon(){
@@ -71,7 +70,6 @@ public class Category implements Bean {
 	}
 	
         
-    @Override
     public void setData(Object[] data) {
                 setIdCategory((Integer) data[0]);
                 setIdIcon((Integer) data[1]);
@@ -80,7 +78,6 @@ public class Category implements Bean {
                 setShortName((String) data[4]);
             }
     
-    @Override
     public Intent toIntent() {
         Intent intent = new Intent();
                 intent.putExtra(Category.FOURSQTL_CATEGORY_ID_CATEGORY, String.valueOf(getIdCategory()));
