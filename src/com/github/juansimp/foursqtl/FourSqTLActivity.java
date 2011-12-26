@@ -40,12 +40,6 @@ public class FourSqTLActivity extends Activity {
 		
 		setupActionBar();
 	}
-		
-	private void showLoginActivity() {
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
-        startActivityForResult(intent, FourSqTLActivity.LOGIN_ACTIVITY_REQUEST_CODE);
-	}
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
