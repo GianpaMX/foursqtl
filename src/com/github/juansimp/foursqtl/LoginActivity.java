@@ -26,7 +26,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
 
 /**
  * https://developer.foursquare.com/docs/oauth.html
@@ -36,7 +35,7 @@ import android.widget.Toast;
  * @author Mark Wyszomierski (markww@gmail.com)
  */
 public class LoginActivity extends Activity {
-    private static final String TAG = "ActivityWebView";
+    private static final String TAG = "LoginActivity";
     
     private static final int DIALOG_AUTH_ERROR_ID = 0;
 
@@ -115,7 +114,8 @@ public class LoginActivity extends Activity {
 		protected void onPostExecute (Boolean result) {
 			dialog.dismiss();
 			if(result) {
-				LoginActivity.this.startApp();
+//				LoginActivity.this.startApp();
+				new GetUserTask(code).execute();
 			} else {
 				showAuthenticate();
 			}
@@ -124,7 +124,7 @@ public class LoginActivity extends Activity {
 	
 	private void startApp() {
 		finish();
-		Intent intent = new Intent(this, FourSqTLActivity.class);
+		Intent intent = new Intent(getApplicationContext(), FourSqTLActivity.class);
 		startActivity(intent);
 	}
     
@@ -191,7 +191,7 @@ public class LoginActivity extends Activity {
 			return true;
 		}
 		@Override
-		protected void onPostExecute (Boolean result) {
+		protected void onPostExecute(Boolean result) {
 			dialog.dismiss();
 			if(result) {
 				LoginActivity.this.startApp();

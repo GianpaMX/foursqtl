@@ -1,7 +1,14 @@
 package com.github.juansimp.foursqtl;
 
+import java.util.ArrayList;
+
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
@@ -10,8 +17,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.github.juansimp.MyDatePicker;
 import com.github.juansimp.MyDateTime;
@@ -24,9 +36,15 @@ import com.github.juansimp.foursqtl.model.collection.AuthenticationCollection;
 import com.github.juansimp.foursqtl.model.exception.UninitializedDatabaseException;
 
 import fi.foyt.foursquare.api.FoursquareApiException;
+import fi.foyt.foursquare.api.Result;
+import fi.foyt.foursquare.api.entities.Checkin;
+import fi.foyt.foursquare.api.entities.CheckinGroup;
+import fi.foyt.foursquare.api.entities.CompactVenue;
 
 public class FourSqTLActivity extends Activity {
 	final public static int LOGIN_ACTIVITY_REQUEST_CODE = 1;
+	
+	private static final int DIALOG_CHECKINS_ERROR_GETTING = 0;
 	
 	private MyDateTime dateFrom, dateTo;
 	private MyDatePicker dateFromPicker, dateToPicker;
@@ -43,10 +61,17 @@ public class FourSqTLActivity extends Activity {
 		setupActionBar();
 		
 		new UserBarSetupTask().execute();
+		new LoadCheckinsTask().execute();
 	}
 	
 	private class UserBarSetupTask extends AsyncTask<Void, Void, Boolean> {
 		Bitmap userPhoto;
+		
+		@Override
+		protected void onPreExecute() {
+			TextView userTextView = (TextView) findViewById(R.id.userTextView);
+			userTextView.setText(MyFoursquare.self.getFirstName() + " " + MyFoursquare.self.getLastName());
+		}
 		
 		@Override
 		protected Boolean doInBackground(Void... params) {
@@ -56,8 +81,48 @@ public class FourSqTLActivity extends Activity {
 		}
 		@Override
 		protected void onPostExecute (Boolean result) {
-			ImageButton userImageButton = (ImageButton) findViewById(R.id.userImageButton);
-			userImageButton.setImageBitmap(userPhoto);
+			ImageView userImage = (ImageView) findViewById(R.id.userImage);
+			userImage.setImageBitmap(userPhoto);
+		}
+	}
+	
+	private class LoadCheckinsTask extends AsyncTask<Void, Void, Boolean> {
+		ProgressDialog dialog;
+		CheckinGroup checkins;
+		
+		@Override
+		protected void onPreExecute() {
+			dialog = ProgressDialog.show(FourSqTLActivity.this, "", "Getting checkins. Please wait...", true);
+		}
+		
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			try {
+				Result<CheckinGroup> result = MyFoursquare.api.usersCheckins(MyFoursquare.self.getId(), null, null, null, null);
+				if (result.getMeta().getCode() == 200) {
+					checkins = result.getResult();
+				} else {
+					throw new Exception();
+				}
+			} catch (Exception e) {
+				return false;
+			}
+			return true;
+		}
+		@Override
+		protected void onPostExecute (Boolean result) {
+			dialog.dismiss();
+			if(result) {
+				ArrayList<String> checkinsArray = new ArrayList<String>();
+				for (Checkin checkin : checkins.getItems()) {
+					CompactVenue venue = checkin.getVenue();
+					if(venue != null) checkinsArray.add(venue.getName());
+				}
+				ListView timeLineList = (ListView) FourSqTLActivity.this.findViewById(R.id.timeLineList);
+				timeLineList.setAdapter(new ArrayAdapter<String>(FourSqTLActivity.this, android.R.layout.simple_list_item_1, checkinsArray));
+			} else {
+				showDialog(FourSqTLActivity.DIALOG_CHECKINS_ERROR_GETTING);
+			}
 		}
 	}
 
@@ -114,4 +179,27 @@ public class FourSqTLActivity extends Activity {
 		dateToButton.setText(dateTo.toDateString());
 		timeToButton.setText(dateTo.toTimeString());
 	}
+	
+    protected Dialog onCreateDialog(int id) {
+        Dialog dialog;
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        
+        switch(id) {
+	        case FourSqTLActivity.DIALOG_CHECKINS_ERROR_GETTING:
+	        	builder.setMessage("Error getting checkins")
+	        	       .setCancelable(false)
+	        	       .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+	        	           public void onClick(DialogInterface dialog, int id) {
+	        	                FourSqTLActivity.this.finish();
+	        	           }
+	        	       });
+	        	dialog = builder.create();
+	            break;
+	        default:
+	            dialog = null;
+        }
+        
+        return dialog;
+    }
+
 }
