@@ -9,17 +9,17 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
+import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -30,12 +30,7 @@ import com.github.juansimp.MyDateTime;
 import com.github.juansimp.MyDateTimeUpdatable;
 import com.github.juansimp.MyFoursquare;
 import com.github.juansimp.MyTimePicker;
-import com.github.juansimp.foursqtl.model.Database;
-import com.github.juansimp.foursqtl.model.catalog.AuthenticationCatalog;
-import com.github.juansimp.foursqtl.model.collection.AuthenticationCollection;
-import com.github.juansimp.foursqtl.model.exception.UninitializedDatabaseException;
 
-import fi.foyt.foursquare.api.FoursquareApiException;
 import fi.foyt.foursquare.api.Result;
 import fi.foyt.foursquare.api.entities.Checkin;
 import fi.foyt.foursquare.api.entities.CheckinGroup;
@@ -113,13 +108,8 @@ public class FourSqTLActivity extends Activity {
 		protected void onPostExecute (Boolean result) {
 			dialog.dismiss();
 			if(result) {
-				ArrayList<String> checkinsArray = new ArrayList<String>();
-				for (Checkin checkin : checkins.getItems()) {
-					CompactVenue venue = checkin.getVenue();
-					if(venue != null) checkinsArray.add(venue.getName());
-				}
 				ListView timeLineList = (ListView) FourSqTLActivity.this.findViewById(R.id.timeLineList);
-				timeLineList.setAdapter(new ArrayAdapter<String>(FourSqTLActivity.this, android.R.layout.simple_list_item_1, checkinsArray));
+				timeLineList.setAdapter(new CheckinViewAdapter(FourSqTLActivity.this, checkins.getItems()));
 			} else {
 				showDialog(FourSqTLActivity.DIALOG_CHECKINS_ERROR_GETTING);
 			}
@@ -200,6 +190,76 @@ public class FourSqTLActivity extends Activity {
         }
         
         return dialog;
+    }
+
+    
+    
+    private class CheckinView extends LinearLayout {
+        public CheckinView(Context context, Checkin checkin) {
+            super(context);
+            View.inflate(context, R.layout.checkin_view, this);
+            setCheckin(checkin);
+        }
+
+        public CheckinView(Context context, AttributeSet attrs) {
+        	super( context, attrs );
+        }
+
+        public CheckinView(Context context, AttributeSet attrs, int defStyle) {
+        	super( context, attrs, defStyle );
+        }
+        
+		public void setCheckin(Checkin checkin) {
+            TextView tmp;
+            
+            tmp = (TextView) findViewById(R.id.venueName);
+            tmp.setText(checkin.getVenue().getName());
+            
+            tmp = (TextView) findViewById(R.id.checkinShout);
+            tmp.setText(checkin.getShout());			
+		}
+
+        private TextView mTitle;
+        private TextView mDialogue;
+    }
+    
+    private class CheckinViewAdapter extends BaseAdapter {
+    	private Context mContext;
+    	Checkin checkins[];
+    	
+    	public CheckinViewAdapter(Context context, Checkin checkins[]) {
+    		mContext = context;
+    		this.checkins = checkins;
+    	}
+    	
+		@Override
+		public int getCount() {
+			return checkins.length;
+		}
+
+		@Override
+		public Object getItem(int position) {
+			return checkins[position];
+		}
+
+		@Override
+		public long getItemId(int position) {
+			return position;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+            CheckinView cv;
+            if (convertView == null) {
+                cv = new CheckinView(mContext, checkins[position]);
+            } else {
+                cv = (CheckinView) convertView;
+                cv.setCheckin(checkins[position]);
+            }
+
+            return cv;
+		}
+    	
     }
 
 }
