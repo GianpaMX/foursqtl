@@ -10,6 +10,11 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -39,6 +44,7 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
+import com.google.android.maps.Projection;
 
 import fi.foyt.foursquare.api.Result;
 import fi.foyt.foursquare.api.entities.Checkin;
@@ -59,6 +65,7 @@ public class FourSqTLActivity extends MapActivity {
 	
 	private List<Overlay> mapOverlays;
 	private MapOverlay itemizedoverlay;
+	private Projection projection;
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -74,6 +81,8 @@ public class FourSqTLActivity extends MapActivity {
 	    final MapView mapView = (MapView) findViewById(R.id.mapview);	    
 	    
 	    mapOverlays = mapView.getOverlays();
+	    projection = mapView.getProjection();
+
 	    Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
 	    itemizedoverlay = new MapOverlay(drawable);
 	    
@@ -172,6 +181,8 @@ public class FourSqTLActivity extends MapActivity {
 				ListView timeLineList = (ListView) FourSqTLActivity.this.findViewById(R.id.timeLineList);
 				timeLineList.setAdapter(new CheckinViewAdapter(FourSqTLActivity.this, mCheckins));
 				
+				ArrayList<GeoPoint> points = new ArrayList<GeoPoint>();
+				
 				for (Checkin checkin : mCheckins) {
 					GeoPoint p = new GeoPoint(
 							(int) (checkin.getVenue().getLocation().getLat().doubleValue() * 1E6),
@@ -179,12 +190,53 @@ public class FourSqTLActivity extends MapActivity {
 					);
 					OverlayItem overlayitem = new OverlayItem(p, checkin.getVenue().getName(), checkin.getShout());
 					itemizedoverlay.addOverlay(overlayitem);
+					points.add(p);
 				}
 				mapOverlays.add(itemizedoverlay);
+				mapOverlays.add(new MyOverlay(points.toArray(new GeoPoint[0])));
 			} else {
 				showDialog(FourSqTLActivity.DIALOG_CHECKINS_ERROR_GETTING);
 			}
 		}
+	}
+
+	class MyOverlay extends Overlay {
+		private GeoPoint points[];
+		
+		public MyOverlay(GeoPoint points[]) {
+			super();
+			this.points = points;
+		}
+
+		public void draw(Canvas canvas, MapView mapv, boolean shadow) {
+	        super.draw(canvas, mapv, shadow);
+
+	        Paint   mPaint = new Paint();
+	        mPaint.setDither(true);
+	        mPaint.setColor(Color.RED);
+	        mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+	        mPaint.setStrokeJoin(Paint.Join.ROUND);
+	        mPaint.setStrokeCap(Paint.Cap.ROUND);
+	        mPaint.setStrokeWidth(2);
+	        
+	        for (int i = 0; i < points.length -1; i++) {
+	        	GeoPoint gP1 = points[i];
+	        	GeoPoint gP2 = points[i+1];
+	        	
+	        	Point p1 = new Point();
+	        	Point p2 = new Point();
+	        	
+	        	Path path = new Path();
+	        	
+	        	projection.toPixels(gP1, p1);
+	        	projection.toPixels(gP2, p2);
+	        	
+	        	path.moveTo(p2.x, p2.y);
+	        	path.lineTo(p1.x,p1.y);
+	        	
+	        	canvas.drawPath(path, mPaint);
+			}
+	    }
 	}
 
 	@Override
