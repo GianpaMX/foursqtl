@@ -1,9 +1,6 @@
 package com.github.juansimp.foursqtl;
 
-import java.util.ArrayList;
-
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -17,7 +14,6 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -30,13 +26,13 @@ import com.github.juansimp.MyDateTime;
 import com.github.juansimp.MyDateTimeUpdatable;
 import com.github.juansimp.MyFoursquare;
 import com.github.juansimp.MyTimePicker;
+import com.google.android.maps.MapActivity;
 
 import fi.foyt.foursquare.api.Result;
 import fi.foyt.foursquare.api.entities.Checkin;
 import fi.foyt.foursquare.api.entities.CheckinGroup;
-import fi.foyt.foursquare.api.entities.CompactVenue;
 
-public class FourSqTLActivity extends Activity {
+public class FourSqTLActivity extends MapActivity {
 	final public static int LOGIN_ACTIVITY_REQUEST_CODE = 1;
 	
 	private static final int DIALOG_CHECKINS_ERROR_GETTING = 0;
@@ -261,5 +257,11 @@ public class FourSqTLActivity extends Activity {
 		}
     	
     }
+
+	@Override
+	protected boolean isRouteDisplayed() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 }
