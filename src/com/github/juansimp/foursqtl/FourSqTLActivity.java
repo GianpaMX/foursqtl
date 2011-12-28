@@ -57,6 +57,9 @@ public class FourSqTLActivity extends MapActivity {
 	
 	private Checkin[] mCheckins;
 	
+	private List<Overlay> mapOverlays;
+	private MapOverlay itemizedoverlay;
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -70,11 +73,17 @@ public class FourSqTLActivity extends MapActivity {
 		
 	    final MapView mapView = (MapView) findViewById(R.id.mapview);	    
 	    
+	    mapOverlays = mapView.getOverlays();
+	    Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
+	    itemizedoverlay = new MapOverlay(drawable);
+	    
 	    ListView timeLineList = (ListView)findViewById(R.id.timeLineList);
 	    timeLineList.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				MapController mc = mapView.getController();
+				
+				// Location represented in micro degrees, multiplying it by 1e6
 				GeoPoint p = new GeoPoint(
 						(int) (mCheckins[position].getVenue().getLocation().getLat().doubleValue() * 1E6),
 						(int) (mCheckins[position].getVenue().getLocation().getLng().doubleValue() * 1E6)
@@ -90,7 +99,7 @@ public class FourSqTLActivity extends MapActivity {
 		private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
 		
 		public MapOverlay(Drawable defaultMarker) {
-			super(defaultMarker);
+			super(boundCenterBottom(defaultMarker));
 		}
 		
 		public void addOverlay(OverlayItem overlay) {
@@ -162,6 +171,16 @@ public class FourSqTLActivity extends MapActivity {
 				mCheckins = checkins.getItems();
 				ListView timeLineList = (ListView) FourSqTLActivity.this.findViewById(R.id.timeLineList);
 				timeLineList.setAdapter(new CheckinViewAdapter(FourSqTLActivity.this, mCheckins));
+				
+				for (Checkin checkin : mCheckins) {
+					GeoPoint p = new GeoPoint(
+							(int) (checkin.getVenue().getLocation().getLat().doubleValue() * 1E6),
+							(int) (checkin.getVenue().getLocation().getLng().doubleValue() * 1E6)
+					);
+					OverlayItem overlayitem = new OverlayItem(p, checkin.getVenue().getName(), checkin.getShout());
+					itemizedoverlay.addOverlay(overlayitem);
+				}
+				mapOverlays.add(itemizedoverlay);
 			} else {
 				showDialog(FourSqTLActivity.DIALOG_CHECKINS_ERROR_GETTING);
 			}
