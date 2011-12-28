@@ -1,5 +1,6 @@
 package com.github.juansimp;
 
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -44,5 +45,9 @@ public class MyDateTime {
 			return String.valueOf(c);
 		else
 			return "0" + String.valueOf(c);
+	}
+	
+	public long toUnixTimeStamp() {
+		return toDate().getTime() / 1000;
 	}
 }

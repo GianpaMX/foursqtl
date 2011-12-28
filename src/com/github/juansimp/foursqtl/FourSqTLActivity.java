@@ -63,6 +63,7 @@ public class FourSqTLActivity extends MapActivity {
 	
 	private Checkin[] mCheckins;
 	
+	MapView mapView;
 	private List<Overlay> mapOverlays;
 	private MapOverlay itemizedoverlay;
 	private Projection projection;
@@ -76,13 +77,12 @@ public class FourSqTLActivity extends MapActivity {
 		setupActionBar();
 		
 		new UserBarSetupTask().execute();
-		new LoadCheckinsTask().execute();
 		
-	    final MapView mapView = (MapView) findViewById(R.id.mapview);	    
+	    mapView = (MapView) findViewById(R.id.mapview);	    
 	    
 	    mapOverlays = mapView.getOverlays();
 	    projection = mapView.getProjection();
-
+	    
 	    Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
 	    itemizedoverlay = new MapOverlay(drawable);
 	    
@@ -157,12 +157,13 @@ public class FourSqTLActivity extends MapActivity {
 		@Override
 		protected void onPreExecute() {
 			dialog = ProgressDialog.show(FourSqTLActivity.this, "", "Getting checkins. Please wait...", true);
+		    mapOverlays.clear();
 		}
 		
 		@Override
 		protected Boolean doInBackground(Void... params) {
 			try {
-				Result<CheckinGroup> result = MyFoursquare.api.usersCheckins(MyFoursquare.self.getId(), null, null, null, null);
+				Result<CheckinGroup> result = MyFoursquare.api.usersCheckins(MyFoursquare.self.getId(), null, null, dateFrom.toUnixTimeStamp(), dateTo.toUnixTimeStamp());
 				if (result.getMeta().getCode() == 200) {
 					checkins = result.getResult();
 				} else {
@@ -194,6 +195,8 @@ public class FourSqTLActivity extends MapActivity {
 				}
 				mapOverlays.add(itemizedoverlay);
 				mapOverlays.add(new MyOverlay(points.toArray(new GeoPoint[0])));
+				
+				mapView.invalidate();
 			} else {
 				showDialog(FourSqTLActivity.DIALOG_CHECKINS_ERROR_GETTING);
 			}
@@ -256,7 +259,9 @@ public class FourSqTLActivity extends MapActivity {
 	private void setupDateTimePickers() {
 		dateFrom = new MyDateTime();
 		dateTo = new MyDateTime();
-
+		
+		dateFrom.hour = dateFrom.minute = 0;
+		
 		dateFromPicker = new MyDatePicker(this, dateFromButton, dateFrom, myUpdateDisplay);
 		timeFromPicker = new MyTimePicker(this, timeFromButton, dateFrom, myUpdateDisplay);
 		
@@ -291,6 +296,8 @@ public class FourSqTLActivity extends MapActivity {
 		timeFromButton.setText(dateFrom.toTimeString());
 		dateToButton.setText(dateTo.toDateString());
 		timeToButton.setText(dateTo.toTimeString());
+		
+		new LoadCheckinsTask().execute();
 	}
 	
     protected Dialog onCreateDialog(int id) {
