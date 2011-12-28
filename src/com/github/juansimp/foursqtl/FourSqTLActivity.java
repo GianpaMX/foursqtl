@@ -1,5 +1,8 @@
 package com.github.juansimp.foursqtl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -7,6 +10,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.AttributeSet;
@@ -14,19 +18,27 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 
 import com.github.juansimp.MyDatePicker;
 import com.github.juansimp.MyDateTime;
 import com.github.juansimp.MyDateTimeUpdatable;
 import com.github.juansimp.MyFoursquare;
 import com.github.juansimp.MyTimePicker;
+import com.google.android.maps.GeoPoint;
+import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.MapActivity;
+import com.google.android.maps.MapController;
+import com.google.android.maps.MapView;
+import com.google.android.maps.Overlay;
+import com.google.android.maps.OverlayItem;
 
 import fi.foyt.foursquare.api.Result;
 import fi.foyt.foursquare.api.entities.Checkin;
@@ -43,6 +55,8 @@ public class FourSqTLActivity extends MapActivity {
 		
 	private Button dateFromButton, timeFromButton, dateToButton, timeToButton;
 	
+	private Checkin[] mCheckins;
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -53,6 +67,47 @@ public class FourSqTLActivity extends MapActivity {
 		
 		new UserBarSetupTask().execute();
 		new LoadCheckinsTask().execute();
+		
+	    final MapView mapView = (MapView) findViewById(R.id.mapview);	    
+	    
+	    ListView timeLineList = (ListView)findViewById(R.id.timeLineList);
+	    timeLineList.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				MapController mc = mapView.getController();
+				GeoPoint p = new GeoPoint(
+						(int) (mCheckins[position].getVenue().getLocation().getLat().doubleValue() * 1E6),
+						(int) (mCheckins[position].getVenue().getLocation().getLng().doubleValue() * 1E6)
+				);
+				mc.animateTo(p);
+				mc.setZoom(17); 
+				mapView.invalidate();
+			}
+	    });
+	}
+	
+	private class MapOverlay extends ItemizedOverlay {
+		private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
+		
+		public MapOverlay(Drawable defaultMarker) {
+			super(defaultMarker);
+		}
+		
+		public void addOverlay(OverlayItem overlay) {
+		    mOverlays.add(overlay);
+		    populate();
+		}
+
+		@Override
+		protected OverlayItem createItem(int i) {
+			return mOverlays.get(i);
+		}
+
+		@Override
+		public int size() {
+			return mOverlays.size();
+		}
+		
 	}
 	
 	private class UserBarSetupTask extends AsyncTask<Void, Void, Boolean> {
@@ -104,8 +159,9 @@ public class FourSqTLActivity extends MapActivity {
 		protected void onPostExecute (Boolean result) {
 			dialog.dismiss();
 			if(result) {
+				mCheckins = checkins.getItems();
 				ListView timeLineList = (ListView) FourSqTLActivity.this.findViewById(R.id.timeLineList);
-				timeLineList.setAdapter(new CheckinViewAdapter(FourSqTLActivity.this, checkins.getItems()));
+				timeLineList.setAdapter(new CheckinViewAdapter(FourSqTLActivity.this, mCheckins));
 			} else {
 				showDialog(FourSqTLActivity.DIALOG_CHECKINS_ERROR_GETTING);
 			}
